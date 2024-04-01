@@ -54,6 +54,14 @@ public class Home {
         posameznikiZivali.setBounds(10, 300, 200, 40);
         container.add(posameznikiZivali);
 
+        posameznikiZivali.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Posamezniki posameznikiZivali = new Posamezniki();
+                posameznikiZivali.show();
+            }
+        });
+
         JButton dogodki = new JButton("Dogodki");
         dogodki.setBounds(10, 350, 200, 40);
         container.add(dogodki);
