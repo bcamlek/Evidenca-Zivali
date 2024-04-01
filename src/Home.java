@@ -66,6 +66,14 @@ public class Home {
         dogodki.setBounds(10, 350, 200, 40);
         container.add(dogodki);
 
+        dogodki.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Dogodki dogodki = new Dogodki();
+                dogodki.show();
+            }
+        });
+
         JButton odjava = new JButton("Sobe");
         odjava.setBounds(10, 350, 200, 40);
         container.add(odjava);
@@ -73,9 +81,24 @@ public class Home {
         JButton logout = new JButton("Odjava");
         logout.setBounds(10, 400, 200, 40);
 
+        logout.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                logout();
+            }
+        });
+
         container.add(logout);
 
         window.setVisible(true); // Naredimo okno vidno
+    }
+
+    private void logout() {
+        // Implementacija odjave
+        Shramba.getInstance().uporabnikId = 0;
+        window.dispose();
+        Prijava prijava = new Prijava();
+        prijava.show();
     }
 
     public void show() {

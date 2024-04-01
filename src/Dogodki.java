@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.util.Date;
 
-public class Posamezniki {
+public class Dogodki {
     private JFrame window;
     private Container container;
     private JLabel mainTitle;
@@ -15,7 +15,7 @@ public class Posamezniki {
     private DefaultTableModel model;
     private DB db;
 
-    public Posamezniki() {
+    public Dogodki() {
         try {
             db = DB.getInstance(); // Pridobimo instanco razreda PostgreSQL
         } catch (Exception e) {
@@ -23,7 +23,7 @@ public class Posamezniki {
             JOptionPane.showMessageDialog(null, "Napaka pri povezavi s podatkovno bazo.", "Napaka", JOptionPane.ERROR_MESSAGE);
         }
 
-        window = new JFrame("Posamezniki Živali"); // Ustvarimo novo okno
+        window = new JFrame("Dogodki"); // Ustvarimo novo okno
         window.setPreferredSize(new Dimension(1024, 768)); // Nastavimo velikost okna
         window.setBounds(10, 10, 1024, 768); // Nastavimo pozicijo in velikost okna
         window.setLayout(new BorderLayout()); // Nastavimo postavitev okna
@@ -34,33 +34,28 @@ public class Posamezniki {
         container = window.getContentPane(); // Ustvarimo nov container
         container.setLayout(new BorderLayout()); // Nastavimo postavitev panela
 
-        mainTitle = new JLabel("Posamezniki Živali"); // Ustvarimo nov label
+        mainTitle = new JLabel("Dogodki"); // Ustvarimo nov label
         mainTitle.setFont(new Font("Arial", Font.BOLD, 48)); // Nastavimo velikost in obliko pisave
         mainTitle.setAlignmentX(Component.CENTER_ALIGNMENT); // Nastavimo poravnavo
         container.add(mainTitle); // Dodamo label v panel
 
         model = new DefaultTableModel(); // Ustvarimo nov model
         model.addColumn("ID"); // Dodamo stolpec
-        model.addColumn("Ime"); // Dodamo stolpec
-        model.addColumn("Datum rojstva"); // Dodamo stolpec
-        model.addColumn("Datum smrti"); // Dodamo stolpec
-        model.addColumn("Živalska vrsta"); // Dodamo stolpec
-        model.addColumn("Kraj"); // Dodamo stolpec
-        model.addColumn("Uporabnik"); // Dodamo stolpec
-
+        model.addColumn("Tip dogodka"); // Dodamo stolpec
+        model.addColumn("Opis dogodka"); // Dodamo stolpec
+        model.addColumn("Datum dogodka"); // Dodamo stolpec
+        model.addColumn("Posameznik živali"); // Dodamo stolpec
         try {
-            String query = "SELECT p.*, (zv.ime) AS zivalska_vrsta, (k.ime) AS kraj, (u.ime || ' ' || u.primek) AS uporabnik FROM posamezniki_zivali p, zivalska_vrsta zv, \"Kraji\" k, userji u WHERE p.id_zv = zv.id AND p.id_k = k.id AND p.id_u = u.id";
+            String query = "SELECT d.*, (p.ime) AS posameznik_zivali FROM dogodki d, posamezniki_zivali p WHERE d.id_pz = p.id";
             ResultSet rs = db.executeQuery(query); // Izvedemo poizvedbo
             while (rs.next()) { // Gremo čez vse vrstice
                 // Dodamo vrstico v model
                 model.addRow(new Object[]{
                         rs.getString("id"),
-                        rs.getString("ime"),
-                        new Date(rs.getDate("datum_roj").getTime()),
-                        rs.getDate("datum_smrt").getTime() == -3600000 ? "" : new Date(rs.getDate("datum_smrt").getTime()),
-                        rs.getString("zivalska_vrsta"),
-                        rs.getString("kraj"),
-                        rs.getString("uporabnik")
+                        rs.getString("tip_dogodka"),
+                        rs.getString("opis"),
+                        new Date(rs.getDate("datum_dog").getTime()),
+                        rs.getString("posameznik_zivali")
                 });
             }
         } catch (Exception e) {
@@ -78,20 +73,18 @@ public class Posamezniki {
         TableColumnModel columnModel = table.getColumnModel();
         columnModel.getColumn(0).setPreferredWidth(50);
         columnModel.getColumn(1).setPreferredWidth(200);
-        columnModel.getColumn(2).setPreferredWidth(200);
+        columnModel.getColumn(2).setPreferredWidth(400);
         columnModel.getColumn(3).setPreferredWidth(200);
         columnModel.getColumn(4).setPreferredWidth(200);
-        columnModel.getColumn(5).setPreferredWidth(200);
-        columnModel.getColumn(6).setPreferredWidth(200);
 
         // Ustvarimo drsnega okna za tabelo
         JScrollPane scrollPane = new JScrollPane(table);
 
         // Ustvarimo panel z gumbi
         JPanel buttonsPanel = new JPanel();
-        JButton addButton = new JButton("Dodaj novega posameznika živali");
-        JButton editButton = new JButton("Uredi posameznika živali");
-        JButton deleteButton = new JButton("Izbriši posameznika živali");
+        JButton addButton = new JButton("Dodaj nov dogodek");
+        JButton editButton = new JButton("Uredi dogodek");
+        JButton deleteButton = new JButton("Izbriši dogodek");
         JButton refreshButton = new JButton("Osveži");
         buttonsPanel.add(refreshButton);
         buttonsPanel.add(addButton);
@@ -104,19 +97,16 @@ public class Posamezniki {
                 // Osvežimo tabelo
                 model.setRowCount(0); // Odstranimo vse vrstice iz tabele
                 try {
-                    String query = "SELECT p.*, (zv.ime) AS zivalska_vrsta, (k.ime) AS kraj, (u.ime || ' ' || u.primek) AS uporabnik FROM posamezniki_zivali p, zivalska_vrsta zv, \"Kraji\" k, userji u WHERE p.id_zv = zv.id AND p.id_k = k.id AND p.id_u = u.id";
+                    String query = "SELECT d.*, (p.ime) AS posameznik_zivali FROM dogodki d, posamezniki_zivali p WHERE d.id_pz = p.id";
                     ResultSet rs = db.executeQuery(query); // Izvedemo poizvedbo
                     while (rs.next()) { // Gremo čez vse vrstice
                         // Dodamo vrstico v model
-                        System.out.println(rs.getDate("datum_smrt").getTime());
                         model.addRow(new Object[]{
                                 rs.getString("id"),
-                                rs.getString("ime"),
-                                new Date(rs.getDate("datum_roj").getTime()),
-                                rs.getDate("datum_smrt").getTime() == -3600000 ? "" : new Date(rs.getDate("datum_smrt").getTime()),
-                                rs.getString("zivalska_vrsta"),
-                                rs.getString("kraj"),
-                                rs.getString("uporabnik")
+                                rs.getString("tip_dogodka"),
+                                rs.getString("opis"),
+                                new Date(rs.getDate("datum_dog").getTime()),
+                                rs.getString("posameznik_zivali")
                         });
                     }
                 } catch (Exception ex) {
@@ -126,55 +116,55 @@ public class Posamezniki {
             }
         });
 
-        // Dodamo poslušalce dogodkov za gumb "Dodaj novega posameznika živali"
+        // Dodamo poslušalce dogodkov za gumb "Dodaj nov dogodek"
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Dodajanje noveega posameznika živali
-                // Tukaj bi morali odpreti novo okno za dodajanje posameznika živali
-                PosameznikiForm obrazec = new PosameznikiForm(0);
+                // Dodajanje novega dogodka
+                // Tukaj bi morali odpreti novo okno za dodajanje dogodka
+                DogodkiForm obrazec = new DogodkiForm(0);
                 obrazec.show();
             }
         });
 
-        // Dodamo poslušalce dogodkov za gumb "Uredi posameznika živali"
+        // Dodamo poslušalce dogodkov za gumb "Uredi dogodek"
         editButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Urejanje posameznika živali
-                // Tukaj bi morali odpreti novo okno za urejanje izbranega posameznika živali
+                // Urejanje dogodka
+                // Tukaj bi morali odpreti novo okno za urejanje izbranega dogodka
                 int selectedRow = table.getSelectedRow();
                 if (selectedRow != -1) {
-                    // Pridobimo ID posameznika živali iz izbrane vrstice
+                    // Pridobimo ID dogodka iz izbrane vrstice
                     String employeeID = model.getValueAt(selectedRow, 0).toString();
-                    PosameznikiForm obrazec = new PosameznikiForm(Integer.parseInt(employeeID));
+                    DogodkiForm obrazec = new DogodkiForm(Integer.parseInt(employeeID));
                     obrazec.show();
                 } else {
-                    JOptionPane.showMessageDialog(container, "Prosimo, izberite posameznika živali za urejanje.");
+                    JOptionPane.showMessageDialog(container, "Prosimo, izberite dogodek za urejanje.");
                 }
             }
         });
 
-        // Dodamo poslušalce dogodkov za gumb "Izbriši posameznika živali"
+        // Dodamo poslušalce dogodkov za gumb "Izbriši dogodek"
         deleteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Brisanje posameznika živali
-                // To bo izbrisalo izbranega posameznika živali
+                // Brisanje dogodka
+                // To bo izbrisalo izbranega dogodka
                 int selectedRow = table.getSelectedRow();
                 if (selectedRow != -1) {
                     // Odstranimo izbrano vrstico iz tabele
                     try {
                         String employeeID = model.getValueAt(selectedRow, 0).toString();
-                        String query = "SELECT delete_posamezniki_zivali(" + employeeID + ");";
+                        String query = "SELECT delete_dogodki(" + employeeID + ");";
                         db.executeQuery(query);
                         model.removeRow(selectedRow);
                     } catch (Exception ex) {
                         ex.printStackTrace();
-                        JOptionPane.showMessageDialog(null, "Napaka pri brisanju posameznika živali.", "Napaka", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Napaka pri brisanju dogodka.", "Napaka", JOptionPane.ERROR_MESSAGE);
                     }
                 } else {
-                    JOptionPane.showMessageDialog(container, "Prosimo, izberite posameznika živali za brisanje.");
+                    JOptionPane.showMessageDialog(container, "Prosimo, izberite dogodek za brisanje.");
                 }
             }
         });
