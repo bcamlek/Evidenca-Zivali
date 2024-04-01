@@ -30,6 +30,14 @@ public class Home {
         kraji.setBounds(10, 200, 200, 40);
         container.add(kraji);
 
+        kraji.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Kraji kraji = new Kraji();
+                kraji.show();
+            }
+        });
+
         JButton zivalskeVrste = new JButton("Živalske vrste");
         zivalskeVrste.setBounds(10, 250, 200, 40);
         container.add(zivalskeVrste);
