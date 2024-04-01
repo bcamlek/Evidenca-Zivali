@@ -26,28 +26,24 @@ public class Home {
         mainTitle.setBounds(10, 50, 1004, 50); // Nastavimo pozicijo in velikost
         container.add(mainTitle); // Dodamo label v container
 
-        JButton stanovalci = new JButton("Stanovalci");
-        stanovalci.setBounds(10, 150, 200, 40);
+        JButton kraji = new JButton("Kraji");
+        kraji.setBounds(10, 200, 200, 40);
+        container.add(kraji);
 
+        JButton zivalskeVrste = new JButton("Živalske vrste");
+        zivalskeVrste.setBounds(10, 250, 200, 40);
+        container.add(zivalskeVrste);
 
-        container.add(stanovalci);
+        JButton posameznikiZivali = new JButton("Posamezniki živali");
+        posameznikiZivali.setBounds(10, 300, 200, 40);
+        container.add(posameznikiZivali);
 
-        JButton vloge = new JButton("Vloge");
-        vloge.setBounds(10, 200, 200, 40);
-
-        JButton zaposleni = new JButton("Zaposleni");
-        zaposleni.setBounds(10, 250, 200, 40);
-
-        container.add(zaposleni);
-
-        JButton storitve = new JButton("Storitve");
-        storitve.setBounds(10, 300, 200, 40);
-
-        container.add(storitve);
+        JButton dogodki = new JButton("Dogodki");
+        dogodki.setBounds(10, 350, 200, 40);
+        container.add(dogodki);
 
         JButton odjava = new JButton("Sobe");
         odjava.setBounds(10, 350, 200, 40);
-
         container.add(odjava);
 
         JButton logout = new JButton("Odjava");
