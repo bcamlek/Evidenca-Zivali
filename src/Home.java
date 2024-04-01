@@ -42,6 +42,14 @@ public class Home {
         zivalskeVrste.setBounds(10, 250, 200, 40);
         container.add(zivalskeVrste);
 
+        zivalskeVrste.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ZivalskeVrste zivalskeVrste = new ZivalskeVrste();
+                zivalskeVrste.show();
+            }
+        });
+
         JButton posameznikiZivali = new JButton("Posamezniki živali");
         posameznikiZivali.setBounds(10, 300, 200, 40);
         container.add(posameznikiZivali);
