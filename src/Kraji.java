@@ -26,7 +26,7 @@ public class Kraji {
         window.setPreferredSize(new Dimension(1024, 768)); // Nastavitev velikosti okna
         window.setBounds(10, 10, 1024, 768); // Nastavitev položaja in velikosti okna
         window.setLayout(new BorderLayout()); // Uporaba BorderLayout za razporeditev komponent
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Zapiranje okna ob zaprtju
+        window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Zapiranje okna ob zaprtju
         window.setLocationRelativeTo(null); // Središčenje okna glede na zaslon
         window.setResizable(false); // Onemogočanje spreminjanja velikosti okna
 
